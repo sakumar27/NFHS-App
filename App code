@@ -1,0 +1,504 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Dec 28 17:43:19 2021
+
+@author: sarahkumar
+"""
+
+import dash
+import pandas as pd
+import plotly.express as px
+import dash_html_components as html
+import dash_core_components as dcc
+from dash.dependencies import Input, Output
+
+
+app = dash.Dash(__name__)
+app.layout = html.Div([
+    html.H1('Data Visualisations from the Indian National Family Health Survey - 5'),
+    html.H4('Source: http://rchiips.org/nfhs/factsheet_NFHS-5.shtml'),
+    html.H2('Percentage of Indian Female Population Aged 6+ Years Who Ever Attended School'),
+    html.Div([
+    "Category:",
+    dcc.Dropdown(
+        id='demo-dropdown',
+        options=[
+            {'label': 'Urban', 'value': 'Urban'},
+            {'label': 'Rural', 'value': 'Rural'},
+            {'label': 'Overall', 'value': 'Overall'}
+        ],
+        value='Urban'
+    )]),
+    html.Div(id='dd-output-container'),
+    html.Div([
+            "States/UTs:",
+            dcc.Dropdown(
+                    id = 'school-state-dropdown',
+                    options = [
+                            {'label': 'Andhra Pradesh', 'value': 'Andhra Pradesh'},
+                            {'label': 'Arunachal Pradesh', 'value': 'Arunachal Pradesh'},
+                            {'label': 'Assam', 'value': 'Assam'},
+                            {'label': 'Bihar', 'value': 'Bihar'},
+                            {'label': 'Chattisgarh', 'value': 'Chattisgarh'},
+                            {'label': 'Goa', 'value': 'Goa'},
+                            {'label': 'Gujarat', 'value': 'Gujarat'},
+                            {'label': 'Haryana', 'value': 'Haryana'},
+                            {'label': 'Himachal Pradesh', 'value': 'Himachal Pradesh'},
+                            {'label': 'Jharkhand', 'value': 'Jharkhand'},
+                            {'label': 'Karnataka', 'value': 'Karnataka'},
+                            {'label': 'Kerala', 'value': 'Kerala'},
+                            {'label': 'Karnataka', 'value': 'Karnataka'},
+                            {'label': 'Madhya Pradesh', 'value': 'Madhya Pradesh'},
+                            {'label': 'Maharashtra', 'value': 'Mahrashtra'},
+                            {'label': 'Manipur', 'value': 'Manipur'},
+                            {'label': 'Meghalaya', 'value': 'Meghalaya'},
+                            {'label': 'Mizoram', 'value': 'Mizoram'},
+                            {'label': 'Nagaland', 'value': 'Nagaland'},
+                            {'label': 'Odisha', 'value': 'Odisha'},
+                            {'label': 'Punjab', 'value': 'Punjab'},
+                            {'label': 'Rajashtan', 'value': 'Rajasthan'},
+                            {'label': 'Sikkim', 'value': 'Sikkim'},
+                            {'label': 'Tamil Nadu', 'value': 'Tamil Nadu'},
+                            {'label': 'Telangana', 'value': 'Telangana'},
+                            {'label': 'Tripura', 'value': 'Tripura'},
+                            {'label': 'Uttar Pradesh', 'value': 'Uttar Pradesh'},
+                            {'label': 'Uttarakhand', 'value': 'Uttarakhand'},
+                            {'label': 'West Bengal', 'value': 'West Bengal'},
+                            {'label': 'Andaman & Nicobar Islands', 'value': 'Andaman & Nicobar Islands'},
+                            {'label': 'Dadra & Nagar Haveli and Daman & Diu', 'value': 'Dadra & Nagar Haveli and Daman & Diu'},
+                            {'label': 'NCT Delhi', 'value': 'NCT Delhi'},
+                            {'label': 'Jammu & Kashmir', 'value': 'Jammu & Kashmir'},
+                            {'label': 'Ladakh', 'value': 'Ladakh'},
+                            {'label': 'Lakshadweep', 'value': 'Lakshadweep'},
+                            {'label': 'Puducherry', 'value': 'Puducherry'}
+                            ],
+                            value = 'Andhra Pradesh',
+    )]),
+    html.Div(children=[html.H3(''), html.H3(id = 'rank')]),
+    html.Div([
+            dcc.Graph(id = 'pie_chart')
+    ]),
+     html.Div([
+            dcc.Graph(id = 'bar_chart_school')
+    ]),
+    html.H2('Percent of Women Who Own and Use a Mobile Phone'),
+    html.Div([
+            "Category:",
+            dcc.Dropdown(
+                    id = 'mobile-phone-category-dropdown',
+                    options=[
+                            {'label': 'Urban', 'value': 'Urban'},
+                            {'label': 'Rural', 'value': 'Rural'},
+                            {'label': 'Overall', 'value': 'Overall'}
+                            ],
+                            value = 'Urban',
+    )]),
+    html.Div([
+            "States/UTs:",
+            dcc.Dropdown(
+                    id = 'mobile-phone-state-dropdown',
+                    options = [
+                            {'label': 'Andhra Pradesh', 'value': 'Andhra Pradesh'},
+                            {'label': 'Arunachal Pradesh', 'value': 'Arunachal Pradesh'},
+                            {'label': 'Assam', 'value': 'Assam'},
+                            {'label': 'Bihar', 'value': 'Bihar'},
+                            {'label': 'Chhattisgarh', 'value': 'Chhattisgarh'},
+                            {'label': 'Goa', 'value': 'Goa'},
+                            {'label': 'Gujarat', 'value': 'Gujarat'},
+                            {'label': 'Haryana', 'value': 'Haryana'},
+                            {'label': 'Himachal Pradesh', 'value': 'Himachal Pradesh'},
+                            {'label': 'Jharkhand', 'value': 'Jharkhand'},
+                            {'label': 'Karnataka', 'value': 'Karnataka'},
+                            {'label': 'Kerala', 'value': 'Kerala'},
+                            {'label': 'Karnataka', 'value': 'Karnataka'},
+                            {'label': 'Madhya Pradesh', 'value': 'Madhya Pradesh'},
+                            {'label': 'Maharashtra', 'value': 'Mahrashtra'},
+                            {'label': 'Manipur', 'value': 'Manipur'},
+                            {'label': 'Meghalaya', 'value': 'Meghalaya'},
+                            {'label': 'Mizoram', 'value': 'Mizoram'},
+                            {'label': 'Nagaland', 'value': 'Nagaland'},
+                            {'label': 'Odisha', 'value': 'Odisha'},
+                            {'label': 'Punjab', 'value': 'Punjab'},
+                            {'label': 'Rajashtan', 'value': 'Rajasthan'},
+                            {'label': 'Sikkim', 'value': 'Sikkim'},
+                            {'label': 'Tamil Nadu', 'value': 'Tamil Nadu'},
+                            {'label': 'Telangana', 'value': 'Telangana'},
+                            {'label': 'Tripura', 'value': 'Tripura'},
+                            {'label': 'Uttar Pradesh', 'value': 'Uttar Pradesh'},
+                            {'label': 'Uttarakhand', 'value': 'Uttarakhand'},
+                            {'label': 'West Bengal', 'value': 'West Bengal'},
+                            {'label': 'Andaman & Nicobar Islands', 'value': 'Andaman & Nicobar Islands'},
+                            {'label': 'Dadra & Nagar Haveli and Daman & Diu', 'value': 'Dadra & Nagar Haveli and Daman & Diu'},
+                            {'label': 'NCT Delhi', 'value': 'NCT Delhi'},
+                            {'label': 'Jammu & Kashmir', 'value': 'Jammu & Kashmir'},
+                            {'label': 'Ladakh', 'value': 'Ladakh'},
+                            {'label': 'Lakshadweep', 'value': 'Lakshadweep'},
+                            {'label': 'Puducherry', 'value': 'Puducherry'}
+                            ],
+                            value = 'Andhra Pradesh',
+    )]),
+    html.Div(children=[html.H3(''), html.H3(id = 'mobile_phone_rank')]),
+    html.Div([
+            dcc.Graph(id = 'pie_chart_mobile_phone')
+    ]),
+    html.Div([
+            dcc.Graph(id = 'bar_chart_mobile_phone')]),
+    html.H2('Percentage of Women Who Own a House or Land (Alone or Jointly)'),
+    html.Div([
+            "Category:",
+            dcc.Dropdown(
+                    id = 'property-category-dropdown',
+                    options=[
+                            {'label': 'Urban', 'value': 'Urban'},
+                            {'label': 'Rural', 'value': 'Rural'},
+                            {'label': 'Overall', 'value': 'Overall'}
+                            ],
+                            value = 'Urban',
+    )]),
+    html.Div([          
+            "States/UTs:",
+            dcc.Dropdown(
+                    id = 'property-states-dropdown',
+                    options = [
+                            {'label': 'Andhra Pradesh', 'value': 'Andhra Pradesh'},
+                            {'label': 'Arunachal Pradesh', 'value': 'Arunachal Pradesh'},
+                            {'label': 'Assam', 'value': 'Assam'},
+                            {'label': 'Bihar', 'value': 'Bihar'},
+                            {'label': 'Chhattisgarh', 'value': 'Chhattisgarh'},
+                            {'label': 'Goa', 'value': 'Goa'},
+                            {'label': 'Gujarat', 'value': 'Gujarat'},
+                            {'label': 'Haryana', 'value': 'Haryana'},
+                            {'label': 'Himachal Pradesh', 'value': 'Himachal Pradesh'},
+                            {'label': 'Jharkhand', 'value': 'Jharkhand'},
+                            {'label': 'Karnataka', 'value': 'Karnataka'},
+                            {'label': 'Kerala', 'value': 'Kerala'},
+                            {'label': 'Karnataka', 'value': 'Karnataka'},
+                            {'label': 'Madhya Pradesh', 'value': 'Madhya Pradesh'},
+                            {'label': 'Maharashtra', 'value': 'Mahrashtra'},
+                            {'label': 'Manipur', 'value': 'Manipur'},
+                            {'label': 'Meghalaya', 'value': 'Meghalaya'},
+                            {'label': 'Mizoram', 'value': 'Mizoram'},
+                            {'label': 'Nagaland', 'value': 'Nagaland'},
+                            {'label': 'Odisha', 'value': 'Odisha'},
+                            {'label': 'Punjab', 'value': 'Punjab'},
+                            {'label': 'Rajashtan', 'value': 'Rajasthan'},
+                            {'label': 'Sikkim', 'value': 'Sikkim'},
+                            {'label': 'Tamil Nadu', 'value': 'Tamil Nadu'},
+                            {'label': 'Telangana', 'value': 'Telangana'},
+                            {'label': 'Tripura', 'value': 'Tripura'},
+                            {'label': 'Uttar Pradesh', 'value': 'Uttar Pradesh'},
+                            {'label': 'Uttarakhand', 'value': 'Uttarakhand'},
+                            {'label': 'West Bengal', 'value': 'West Bengal'},
+                            {'label': 'Andaman & Nicobar Islands', 'value': 'Andaman & Nicobar Islands'},
+                            {'label': 'Dadra & Nagar Haveli and Daman & Diu', 'value': 'Dadra & Nagar Haveli and Daman & Diu'},
+                            {'label': 'NCT Delhi', 'value': 'NCT Delhi'},
+                            {'label': 'Jammu & Kashmir', 'value': 'Jammu & Kashmir'},
+                            {'label': 'Ladakh', 'value': 'Ladakh'},
+                            {'label': 'Lakshadweep', 'value': 'Lakshadweep'},
+                            {'label': 'Puducherry', 'value': 'Puducherry'}
+                            ],
+                            value = 'Andhra Pradesh',
+                    
+                    )]),
+    html.Div(children=[html.H3(''), html.H3(id = 'property_rank')]),
+    html.Div([
+            dcc.Graph(id = 'pie_chart_property')]),
+    html.Div([
+            dcc.Graph(id = 'bar_chart_property')]),
+    html.H2('Percentage of Women Who Have Bank Accounts That They Use'),
+    html.Div([
+            "Category:",
+            dcc.Dropdown(
+                    id = 'bank-category-dropdown',
+                    options=[
+                            {'label': 'Urban', 'value': 'Urban'},
+                            {'label': 'Rural', 'value': 'Rural'},
+                            {'label': 'Overall', 'value': 'Overall'}
+                            ],
+                            value = 'Urban',
+    )]),
+    html.Div([          
+            "States/UTs:",
+            dcc.Dropdown(
+                    id = 'bank-states-dropdown',
+                    options = [
+                            {'label': 'Andhra Pradesh', 'value': 'Andhra Pradesh'},
+                            {'label': 'Arunachal Pradesh', 'value': 'Arunachal Pradesh'},
+                            {'label': 'Assam', 'value': 'Assam'},
+                            {'label': 'Bihar', 'value': 'Bihar'},
+                            {'label': 'Chhattisgarh', 'value': 'Chhattisgarh'},
+                            {'label': 'Goa', 'value': 'Goa'},
+                            {'label': 'Gujarat', 'value': 'Gujarat'},
+                            {'label': 'Haryana', 'value': 'Haryana'},
+                            {'label': 'Himachal Pradesh', 'value': 'Himachal Pradesh'},
+                            {'label': 'Jharkhand', 'value': 'Jharkhand'},
+                            {'label': 'Karnataka', 'value': 'Karnataka'},
+                            {'label': 'Kerala', 'value': 'Kerala'},
+                            {'label': 'Karnataka', 'value': 'Karnataka'},
+                            {'label': 'Madhya Pradesh', 'value': 'Madhya Pradesh'},
+                            {'label': 'Maharashtra', 'value': 'Mahrashtra'},
+                            {'label': 'Manipur', 'value': 'Manipur'},
+                            {'label': 'Meghalaya', 'value': 'Meghalaya'},
+                            {'label': 'Mizoram', 'value': 'Mizoram'},
+                            {'label': 'Nagaland', 'value': 'Nagaland'},
+                            {'label': 'Odisha', 'value': 'Odisha'},
+                            {'label': 'Punjab', 'value': 'Punjab'},
+                            {'label': 'Rajashtan', 'value': 'Rajasthan'},
+                            {'label': 'Sikkim', 'value': 'Sikkim'},
+                            {'label': 'Tamil Nadu', 'value': 'Tamil Nadu'},
+                            {'label': 'Telangana', 'value': 'Telangana'},
+                            {'label': 'Tripura', 'value': 'Tripura'},
+                            {'label': 'Uttar Pradesh', 'value': 'Uttar Pradesh'},
+                            {'label': 'Uttarakhand', 'value': 'Uttarakhand'},
+                            {'label': 'West Bengal', 'value': 'West Bengal'},
+                            {'label': 'Andaman & Nicobar Islands', 'value': 'Andaman & Nicobar Islands'},
+                            {'label': 'Dadra & Nagar Haveli and Daman & Diu', 'value': 'Dadra & Nagar Haveli and Daman & Diu'},
+                            {'label': 'NCT Delhi', 'value': 'NCT Delhi'},
+                            {'label': 'Jammu & Kashmir', 'value': 'Jammu & Kashmir'},
+                            {'label': 'Ladakh', 'value': 'Ladakh'},
+                            {'label': 'Lakshadweep', 'value': 'Lakshadweep'},
+                            {'label': 'Puducherry', 'value': 'Puducherry'}
+                            ],
+                            value = 'Andhra Pradesh',
+                    )]),
+    html.Div(children=[html.H3(''), html.H3(id = 'bank_rank')]),
+    html.Div([
+            dcc.Graph(id = 'pie_chart_bank')]),
+    html.Div([
+            dcc.Graph(id = 'bar_chart_bank')])
+    
+])
+
+    
+data_school_5 = [['Urban', 82.5], ['Rural', 66.8], ['Overall', 71.8]]
+
+df_data_school_5 = pd.DataFrame(data_school_5, columns = ['location', 'number'])
+
+df_states_school = pd.read_csv('Desktop/6+ Dashboard data csv.csv', names = ['State', 'Urban', 'Rural', 'Overall'])
+df_states_lit_rates = pd.read_csv('Desktop/literacy rates dashboard data csv.csv', names = ['State', 'Urban Men', 'Urban Women', 'Rural Men', 'Rural Women', 'Men', 'Women'])
+df_states_mobile_phones = pd.read_csv('Desktop/Mobile phone dashboard data csv.csv', names = ['State', 'Urban', 'Rural', 'Overall'])
+df_states_property = pd.read_csv('Desktop/Dashboard data property csv.csv', names = ['State', 'Urban', 'Rural', 'Overall'])
+df_states_bank = pd.read_csv('Desktop/Dashboard data bank account csv.csv', names = ['State', 'Urban', 'Rural', 'Overall'])
+
+@app.callback(
+    Output('rank', 'children'), 
+    [Input('demo-dropdown', 'value'), Input('school-state-dropdown', 'value')]
+)
+
+def update_rank_header(region, state):
+    df_school_filtered_by_region = df_states_school[['State', region]]
+    df_school_filtered_by_region = df_school_filtered_by_region.drop(0)
+    df_school_ordered = df_school_filtered_by_region.sort_values(by = region, ascending = False).reset_index(drop = True)
+    rank = df_school_ordered.loc[df_school_ordered['State'] == state].index[0]
+    output = state + '\'s rank in the \'' + region + '\' category (among all states/UTs): ' + str(rank + 1)
+    return output
+
+@app.callback(
+    Output('pie_chart','figure'),
+    [Input('demo-dropdown', 'value'), Input('school-state-dropdown', 'value')]
+)
+
+
+def create_school_pie_chart(selected_value, val):
+    state = val
+    df_school_filtered = df_states_school.loc[df_states_school['State'] == state]
+    percent = float(df_school_filtered[selected_value].values[0])
+    data_school_5 = [['Have Been To School', percent], ['Never Been To School', 100 - percent]]
+    df_data_school_5 = pd.DataFrame(data_school_5, columns = ['state', 'percent'])
+    fig = px.pie(df_data_school_5, values = 'percent', names = 'state')
+    return fig
+
+@app.callback(
+        Output('bar_chart_school', 'figure'),
+        [Input('demo-dropdown', 'value')]
+)
+
+def create_school_bar_chart(region):
+    df_school_dropped = df_states_school.drop(0)
+    df_school_bar_chart_Urban = df_school_dropped[['State', 'Urban']]
+    Urban_list = ['Urban']*len(df_school_dropped)
+    df_school_bar_chart_Urban['Region'] = Urban_list
+    df_school_bar_chart_Urban.rename(columns = {'Urban': 'percent'}, inplace = True)
+    
+    df_school_bar_chart_Rural = df_school_dropped[['State', 'Rural']]
+    Rural_list = ['Rural']*len(df_school_dropped)
+    df_school_bar_chart_Rural['Region'] = Rural_list
+    df_school_bar_chart_Rural.rename(columns = {'Rural': 'percent'}, inplace = True)
+    
+    df_school_bar_chart_Overall = df_school_dropped[['State', 'Overall']]
+    Overall_list = ['Overall']*len(df_school_dropped)
+    df_school_bar_chart_Overall['Region'] = Overall_list
+    df_school_bar_chart_Overall.rename(columns = {'Overall': 'percent'}, inplace = True)
+    
+    df_school_bar_chart_final = pd.concat([df_school_bar_chart_Urban,df_school_bar_chart_Rural, df_school_bar_chart_Overall], ignore_index = True)
+    
+    bar_chart_school = px.histogram(df_school_bar_chart_final, x = 'State', y = 'percent', color = 'Region', title = 'A Comparison of Different States and Regions', barmode = 'group')
+    return bar_chart_school  
+
+@app.callback(
+    Output('mobile_phone_rank', 'children'), 
+    [Input('mobile-phone-category-dropdown', 'value'), Input('mobile-phone-state-dropdown', 'value')]
+)
+
+def update_rank_header_mobile_phone(region, state):
+    df_mobile_phone_filtered_by_region = df_states_mobile_phones[['State', region]]
+    df_mobile_phone_filtered_by_region = df_mobile_phone_filtered_by_region.drop(0)
+    df_mobile_phone_ordered = df_mobile_phone_filtered_by_region.sort_values(by = region, ascending = False).reset_index(drop = True)
+    rank = df_mobile_phone_ordered.loc[df_mobile_phone_ordered['State'] == state].index[0]
+    output = state + '\'s rank in the \'' + region + '\' category (among all states/UTs): ' + str(rank + 1)
+    return output
+        
+
+@app.callback(
+    Output('pie_chart_mobile_phone', 'figure'),
+    [Input('mobile-phone-category-dropdown', 'value'), Input('mobile-phone-state-dropdown', 'value')]
+)
+
+def create_mobile_phone_pie_chart(region_phone, state_phone):
+    df_mobile_phones_filtered = df_states_mobile_phones.loc[df_states_mobile_phones['State'] == state_phone]
+    percent_mobile_phone = float(df_mobile_phones_filtered[region_phone].values[0])
+    data_mobile_phones_5 = [['Own A Mobile Phone', percent_mobile_phone], ['Do Not Own A Mobile Phone', 100 - percent_mobile_phone]]
+    df_data_mobile_phones_5 = pd.DataFrame(data_mobile_phones_5, columns = ['own', 'percent_phones'])
+    fig_mobile_phone = px.pie(df_data_mobile_phones_5, values = 'percent_phones', names = 'own')
+    return fig_mobile_phone
+
+@app.callback(
+        Output('bar_chart_mobile_phone', 'figure'),
+        [Input('mobile-phone-category-dropdown', 'value')]
+)
+
+def create_mobile_phone_bar_chart(region_mobile_phone):
+    df_mobile_phones_dropped = df_states_mobile_phones.drop(0)
+    df_mobile_phones_bar_chart_Urban = df_mobile_phones_dropped[['State', 'Urban']]
+    
+    Urban_list = ['Urban']*len(df_mobile_phones_dropped)
+    df_mobile_phones_bar_chart_Urban['Region'] = Urban_list
+    df_mobile_phones_bar_chart_Urban.rename(columns = {'Urban': 'percent'}, inplace = True)
+    
+    df_mobile_phones_bar_chart_Rural = df_mobile_phones_dropped[['State', 'Rural']]
+    Rural_list = ['Rural']*len(df_mobile_phones_dropped)
+    df_mobile_phones_bar_chart_Rural['Region'] = Rural_list
+    df_mobile_phones_bar_chart_Rural.rename(columns = {'Rural': 'percent'}, inplace = True)
+    
+    df_mobile_phones_bar_chart_Overall = df_mobile_phones_dropped[['State', 'Overall']]
+    Overall_list = ['Overall']*len(df_mobile_phones_dropped)
+    df_mobile_phones_bar_chart_Overall['Region'] = Overall_list
+    df_mobile_phones_bar_chart_Overall.rename(columns = {'Overall': 'percent'}, inplace = True)
+    
+    df_mobile_phones_bar_chart_final = pd.concat([df_mobile_phones_bar_chart_Urban,df_mobile_phones_bar_chart_Rural, df_mobile_phones_bar_chart_Overall], ignore_index = True)
+    
+    bar_chart_mobile_phones = px.histogram(df_mobile_phones_bar_chart_final, x = 'State', y = 'percent', color = 'Region', title = 'A Comparison of Different States and Regions', barmode = 'group')
+    return bar_chart_mobile_phones 
+  
+@app.callback(
+    Output('property_rank', 'children'), 
+    [Input('property-category-dropdown', 'value'), Input('property-states-dropdown', 'value')]
+)
+
+def update_rank_header_property(region, state):
+    df_property_filtered_by_region = df_states_property[['State', region]]
+    df_property_filtered_by_region = df_property_filtered_by_region.drop(0)
+    df_property_ordered = df_property_filtered_by_region.sort_values(by = region, ascending = False).reset_index(drop = True)
+    rank = df_property_ordered.loc[df_property_ordered['State'] == state].index[0]
+    output = state + '\'s rank in the \'' + region + '\' category (among all states/UTs): ' + str(rank + 1)
+    return output 
+
+@app.callback(
+        Output('pie_chart_property', 'figure'),
+        [Input('property-states-dropdown', 'value'), Input('property-category-dropdown', 'value')]
+)
+
+def create_property_pie_chart(state_property, region_property):
+    df_property_filtered = df_states_property.loc[df_states_property['State'] == state_property]
+    percent_property = float(df_property_filtered[region_property].values[0])
+    data_property_5 = [['Own Property', percent_property], ['Do Not Own Property', 100 - percent_property]]
+    df_property_5 = pd.DataFrame(data_property_5, columns = ['own', 'percent_property'])
+    fig_property = px.pie(df_property_5, values = 'percent_property', names = 'own')
+    return fig_property
+
+@app.callback(
+        Output('bar_chart_property', 'figure'),
+        [Input('property-states-dropdown', 'value')]
+)
+
+def create_property_bar_chart(state_property):
+    df_property_dropped = df_states_property.drop(0)
+    df_property_bar_chart_Urban = df_property_dropped[['State', 'Urban']]
+    Urban_list = ['Urban']*len(df_property_dropped)
+    df_property_bar_chart_Urban['Region'] = Urban_list
+    df_property_bar_chart_Urban.rename(columns = {'Urban': 'percent'}, inplace = True)
+    
+    df_property_bar_chart_Rural = df_property_dropped[['State', 'Rural']]
+    Rural_list = ['Rural']*len(df_property_dropped)
+    df_property_bar_chart_Rural['Region'] = Rural_list
+    df_property_bar_chart_Rural.rename(columns = {'Rural': 'percent'}, inplace = True)
+    
+    df_property_bar_chart_Overall = df_property_dropped[['State', 'Overall']]
+    Overall_list = ['Overall']*len(df_property_dropped)
+    df_property_bar_chart_Overall['Region'] = Overall_list
+    df_property_bar_chart_Overall.rename(columns = {'Overall': 'percent'}, inplace = True)
+    
+    df_property_bar_chart_final = pd.concat([df_property_bar_chart_Urban,df_property_bar_chart_Rural, df_property_bar_chart_Overall], ignore_index = True)
+    
+    bar_chart_property = px.histogram(df_property_bar_chart_final, x = 'State', y = 'percent', color = 'Region', title = 'A Comparison of Different States and Regions', barmode = 'group')
+    return bar_chart_property
+
+@app.callback(
+    Output('bank_rank', 'children'), 
+    [Input('bank-category-dropdown', 'value'), Input('bank-states-dropdown', 'value')]
+)
+
+def update_rank_header_bank(region, state):
+    df_bank_filtered_by_region = df_states_bank[['State', region]]
+    df_bank_filtered_by_region = df_bank_filtered_by_region.drop(0)
+    df_bank_ordered = df_bank_filtered_by_region.sort_values(by = region, ascending = False).reset_index(drop = True)
+    rank = df_bank_ordered.loc[df_bank_ordered['State'] == state].index[0]
+    output = state + '\'s rank in the \'' + region + '\' category (among all states/UTs): ' + str(rank + 1)
+    return output
+
+
+@app.callback(
+        Output('pie_chart_bank', 'figure'),
+        [Input('bank-category-dropdown', 'value'), Input('bank-states-dropdown', 'value')]
+)
+
+def create_bank_pie_chart(region, state):
+    df_bank_filtered = df_states_bank.loc[df_states_bank['State'] == state]
+    percent_bank = float(df_bank_filtered[region].values[0])
+    data_bank_5 = [['Have A Bank Account', percent_bank], ['Do Not Have A Bank Account', 100 - percent_bank]]
+    df_bank_5 = pd.DataFrame(data_bank_5, columns = ['bank account?', 'percent_bank'])
+    fig_bank = px.pie(df_bank_5, values = 'percent_bank', names = 'bank account?')
+    return fig_bank
+
+@app.callback(
+        Output('bar_chart_bank', 'figure'),
+        [Input('bank-category-dropdown', 'value'), Input('bank-states-dropdown', 'value')]
+)
+
+def create_bank_bar_chart(region, state):
+    df_bank_dropped = df_states_bank.drop(0)
+    df_bank_bar_chart_Urban = df_bank_dropped[['State', 'Urban']]
+    Urban_list = ['Urban']*len(df_bank_dropped)
+    df_bank_bar_chart_Urban['Region'] = Urban_list
+    df_bank_bar_chart_Urban.rename(columns = {'Urban': 'percent'}, inplace = True)
+    
+    df_bank_bar_chart_Rural = df_bank_dropped[['State', 'Rural']]
+    Rural_list = ['Rural']*len(df_bank_dropped)
+    df_bank_bar_chart_Rural['Region'] = Rural_list
+    df_bank_bar_chart_Rural.rename(columns = {'Rural': 'percent'}, inplace = True)
+    
+    df_bank_bar_chart_Overall = df_bank_dropped[['State', 'Overall']]
+    Overall_list = ['Overall']*len(df_bank_dropped)
+    df_bank_bar_chart_Overall['Region'] = Overall_list
+    df_bank_bar_chart_Overall.rename(columns = {'Overall': 'percent'}, inplace = True)
+    
+    df_bank_bar_chart_final = pd.concat([df_bank_bar_chart_Urban,df_bank_bar_chart_Rural, df_bank_bar_chart_Overall], ignore_index = True)
+    
+    bar_chart_bank = px.histogram(df_bank_bar_chart_final, x = 'State', y = 'percent', color = 'Region', title = 'A Comparison of Different States and Regions', barmode = 'group')
+    return bar_chart_bank  
+
+
+
+if __name__ == '__main__':
+    app.run_server(debug=True, host = '127.0.0.1')
